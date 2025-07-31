@@ -1,0 +1,64 @@
+#!/bin/sh
+# This script manages the storage node services in FreeBSD jails.
+. /etc/rc.subr
+
+name="storage_nodes"
+
+# --- Configuration ---
+# This is the list of jails this script will manage.
+jails_to_manage="storage_node_1 storage_node_2 storage_node_3"
+
+start_jails() {
+    echo "Starting storage node services..."
+    for jail_name in ${jails_to_manage}; do
+        local pidfile="/var/run/${jail_name}.pid"
+        echo " - Starting in jail: ${jail_name}"
+
+        /usr/sbin/jexec ${jail_name} /usr/local/bin/java -jar /root/storage-node.jar > /tmp/${jail_name}.log 2>&1 &
+        echo $! > "${pidfile}"
+    done
+    echo "All storage node services started."
+}
+
+stop_jails() {
+    echo "Stopping storage node services..."
+    for jail_name in ${jails_to_manage}; do
+        local pidfile="/var/run/${jail_name}.pid"
+        if [ -f "${pidfile}" ]; then
+            local pid=$(cat "${pidfile}")
+            echo " - Stopping in jail ${jail_name} (PID: ${pid})."
+            kill "${pid}" && rm -f "${pidfile}"
+        else
+            echo " - Service in jail ${jail_name} was not running."
+        fi
+    done
+}
+
+status_jails() {
+    echo "Status of storage node services:"
+    for jail_name in ${jails_to_manage}; do
+        local pidfile="/var/run/${jail_name}.pid"
+        if [ -f "${pidfile}" ] && ps -p $(cat "${pidfile}") > /dev/null; then
+            echo " - Service in jail ${jail_name} is RUNNING (PID: $(cat "${pidfile}"))."
+        else
+            echo " - Service in jail ${jail_name} is STOPPED."
+        fi
+    done
+}
+
+
+case "$1" in
+start)
+    start_jails
+    ;;
+stop)
+    stop_jails
+    ;;
+status)
+    status_jails
+    ;;
+*)
+    echo "Usage: `basename $0` {start|stop|status}"
+    exit 64
+    ;;
+esac
