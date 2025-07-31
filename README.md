@@ -82,7 +82,7 @@ This project requires two main components: the Spring Boot application running o
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/prodXCE/Distributed-storage-system.git)
+    git clone https://github.com/prodXCE/Distributed-storage-system.git
     cd Distributed-storage_system
     ```
 
@@ -267,7 +267,6 @@ exec.stop = "/bin/sh /etc/rc.shutdown";
 exec.clean;
 mount.devfs;
 
-# --- Define our three storage node jails ---
 
 storage_node_1 {
   path = "/usr/jails/node1_root";
@@ -423,5 +422,3 @@ storage_node_3 {
 
 The FreeBSD storage cluster is now fully configured and running.
 
-```
-```
