@@ -35,6 +35,10 @@ public class FileController {
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error during file upload: " + e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Upload process was interrupted.");
         }
     }
 
@@ -60,6 +64,9 @@ public class FileController {
                 } catch (IOException e) {
                     System.err.println("FAILED to retrieve chunk " + chunk.getId() + " from " + nodeIdentifier
                             + ". Trying next replica...");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException("Download interrupted while fetching chun " + chunk.getId(), e);
                 }
             }
 

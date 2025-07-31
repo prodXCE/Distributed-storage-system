@@ -27,7 +27,7 @@ public class MetadataService {
     }
 
     @Transactional
-    public FileMetadata storeFile(MultipartFile file) throws IOException {
+    public FileMetadata storeFile(MultipartFile file) throws IOException, InterruptedException {
         FileMetadata fileMetadata = new FileMetadata();
         fileMetadata.setFileName(file.getOriginalFilename());
         fileMetadata.setFileSize(file.getSize());
