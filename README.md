@@ -1,4 +1,4 @@
-````markdown
+
 # Distributed File Storage System (A Mini Google Drive)
 
 A fault-tolerant, scalable, and distributed file storage system built from the ground up using Java (Spring Boot) and FreeBSD. This project demonstrates core principles of distributed systems by emulating the architecture of modern cloud storage services.
